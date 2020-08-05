@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Document</title>
+        <script src="./script/jquery-3.1.1.min.js"></script>
+        <script src="./script/bootstrap.min.js"></script>
+        <link rel="stylesheet" href="./script/bootstrap.min.css">
+        <Title>Buscar Endereços</Title>
+    </head>
+    <style>
+        .column{
+            display: flex;
+            flex-direction: column;
+        }
+        .margemInput{
+            margin-bottom: 20px;
+            width: 300px;
+        }
+
+        .styleButton{
+            width: 100px;
+            margin-bottom: 30px;
+            margin-left: 200px;
+        }
+
+        .divGeral{
+            margin-left: 37rem;
+            margin-top: 6rem;
+        }
+
+        h1{
+            display: flex;
+            justify-content: center;
+        }
+
+        body {
+            background-color: rgb(236, 236, 236);
+        }
+    </style>
+    <body>
+        <h1>Página que faz consultas na API Via Cep</h1>
+        <div class="divGeral">
+            <div class="column">
+                <label for="">Escolha um CEP que deseja informações</label>
+                <input type="text" placeholder="Digite um CEP válido" id="cep" data-mask="00000000" class="margemInput form-control" maxlength="8" required>
+                <button id="botaoEnviar" class="styleButton btn-primary btn">Buscar</button>
+            </div>
+    
+            <div class="column">
+                <label for="">Cidade</label>
+                <input type="text" id="localidade" class="margemInput form-control" readonly>
+                <label for="">Estado</label>
+                <input type="text" id="estado" class="margemInput form-control" readonly>
+                <label for="">Endereço</label>
+                <input type="text" id="logradouro" class="margemInput form-control" readonly> 
+                <label for="">Faixa de Numero</label>
+                <input type="text" id="complemento" class="margemInput form-control" readonly>
+            </div>
+        </div>
+
+    </body>
+    <script>
+        $(document).ready(function(){
+            $("#botaoEnviar").on("click",function(){
+                var cep = $("#cep").val();
+                let cepValido = /^\d+$/.test(cep);
+                if(cep.length < 8 || cepValido == "false"){
+                    alert("CEP Inválido");
+                } else {
+                    $.ajax({
+                    url: "https://viacep.com.br/ws/" + cep + "/json",
+                    method: "GET"
+                    }).done(function(res){
+                        if(res.erro == "true"){
+                            alert("CEP não encontrado");
+                            $("#localidade").val("");
+                            $("#estado").val("");
+                            $("#logradouro").val("");
+                            $("#complemento").val("");
+                        } else {
+                            $("#localidade").val(res.localidade);
+                            $("#estado").val(res.uf);
+                            $("#logradouro").val(res.logradouro);
+                            $("#complemento").val(res.complemento);
+                        }
+    
+                    });
+                }
+            });
+        });
+    </script>
+</html>
