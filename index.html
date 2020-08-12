@@ -38,6 +38,10 @@
         body {
             background-color: rgb(236, 236, 236);
         }
+
+        #mensagemValidacao{
+            color: red;
+        }
     </style>
     <body>
         <h1>Página que faz consultas na API Via Cep</h1>
@@ -45,6 +49,7 @@
             <div class="column">
                 <label for="">Escolha um CEP que deseja informações</label>
                 <input type="text" placeholder="Digite um CEP válido" id="cep" data-mask="00000000" class="margemInput form-control" maxlength="8" required>
+                <span id="mensagemValidacao"></span>
                 <button id="botaoEnviar" class="styleButton btn-primary btn">Buscar</button>
             </div>
     
@@ -64,10 +69,12 @@
     <script>
         $(document).ready(function(){
             $("#botaoEnviar").on("click",function(){
+                $("#mensagemValidacao").hide();
                 var cep = $("#cep").val();
                 let cepValido = /^\d+$/.test(cep);
                 if(cep.length < 8 || cepValido == "false"){
-                    alert("CEP Inválido");
+                    $("#mensagemValidacao").html("CEP inválido");
+                    $("#mensagemValidacao").show();
                 } else {
                     $.ajax({
                     url: "https://viacep.com.br/ws/" + cep + "/json",
